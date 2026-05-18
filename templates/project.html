@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS /// {{ project.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    
+    <div class="project-landing">
+        <a href="/" class="btn-back"><< RETURN_TO_NEXUS_BASE</a>
+        
+        <header class="project-hero">
+            <div class="project-hero-overlay"></div>
+            <!-- Video casuale interpolato via JS -->
+            <video autoplay muted playsinline class="project-video" id="projectVideo">
+                <source src="/static/videos/carousel.mp4" type="video/mp4">
+            </video>
+            
+            <div class="project-hero-content">
+                <h1 class="project-title glitch" data-text="{{ project.title }}">{{ project.title }}</h1>
+                <span class="status-badge {{ project.status_color }}">[{{ project.status }}]</span>
+            </div>
+            <div class="scroll-indicator">SCROLL <br> ↓</div>
+        </header>
+
+        <section class="project-details">
+            <div class="details-grid">
+                
+                <div class="project-info-box">
+                    <h2 class="neon-text">SYSTEM_<span class="{{ project.status_color }}">OVERVIEW</span></h2>
+                    <p class="project-desc">{{ project.long_desc }}</p>
+                    
+                    <div class="tech-specs">
+                        <div class="spec-row"><span>KERNEL:</span> <span>STABLE</span></div>
+                        <div class="spec-row"><span>POWER:</span> <span>12V LI-ION</span></div>
+                        <div class="spec-row"><span>CONNECTION:</span> <span>SECURE</span></div>
+                    </div>
+                </div>
+
+                <div class="project-visuals">
+                    <!-- Simuliamo un visore tecnico della struttura -->
+                    <div class="wireframe-box">
+                        <div class="scanning-bar"></div>
+                        <p class="wireframe-text text-center" style="padding-top:120px;">[ NO SIGNAL DUMP ]<br>RENDERING SCHEMATICS...</p>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>/// NEXUS ROBOTICS TEAM © 2026 ///</p>
+    </footer>
+
+</body>
+</html>

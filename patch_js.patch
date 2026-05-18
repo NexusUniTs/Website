@@ -1,0 +1,42 @@
+--- static/js/main.js
++++ static/js/main.js
+@@ -107,25 +107,24 @@
+ 
+ // Gestione rotazione video random
+ document.addEventListener("DOMContentLoaded", () => {
+-    const heroVideo = document.getElementById("heroVideo");
+-    if (!heroVideo) return;
++    const mediaVideo = document.getElementById("heroVideo") || document.getElementById("projectVideo");
++    if (!mediaVideo) return;
+ 
+     const videos = [
+         "/static/videos/carousel.mp4",
+         "/static/videos/carousel2.mp4",
+         "/static/videos/carousel3.mp4",
+         "/static/videos/carousel4.mp4"
+     ];
+ 
+     let currentVideo = "";
+     
+     function playRandomVideoSnippet() {
+         let nextVideo = videos[Math.floor(Math.random() * videos.length)];
+         
+         while(nextVideo === currentVideo && videos.length > 1) {
+             nextVideo = videos[Math.floor(Math.random() * videos.length)];
+         }
+         
+         currentVideo = nextVideo;
+-        heroVideo.src = currentVideo;
+-        heroVideo.play().catch(e => console.log("Auto-play prevented", e));
++        mediaVideo.src = currentVideo;
++        mediaVideo.play().catch(e => console.log("Auto-play prevented", e));
+         
+         const snippetDuration = Math.random() * 2000 + 2500;
+         
+         setTimeout(() => {
+             playRandomVideoSnippet();
+         }, snippetDuration);
+     }
+ 
+     playRandomVideoSnippet();
+ });

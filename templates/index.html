@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Robotics Team /// CYBER-NETIC ORIGIN</title>
+    <!-- Google Fonts: Orbitron & Share Tech Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Hero Section Cyberpunk -->
+    <header class="hero">
+        <video autoplay muted playsinline class="hero-video" id="heroVideo">
+            <!-- Verrà gestito dal JS -->
+            <source src="/static/videos/carousel.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title glitch" data-text="NEXUS">NEXUS</h1>
+            <p class="hero-subtitle">[ SYSTEM ON - ENGINEERING THE FUTURE ]</p>
+        </div>
+        <div class="scroll-indicator">SCROLL <br> ↓</div>
+    </header>
+
+    <!-- Dynamic Layout Section (Pretext) -->
+    <section class="dynamic-layout-section">
+        <h2 class="section-title neon-text">SPECIFICHE <span class="cyan">ROBOT</span></h2>
+        <div class="subtitle-desc">>> CLICCA ALL'INTERNO DELL'AREA PER RICALCOLARE IL PERCORSO E AGGIRARE L'ANOMALIA LOGICA.</div>
+        
+        <div id="canvas-container" class="cyber-grid">
+            <canvas id="nexusCanvas"></canvas>
+        </div>
+    </section>
+
+    <!-- Nuova Sezione Progetti -->
+    <section class="projects-section" id="projects">
+        <h2 class="section-title neon-text">PROGETTI <span class="magenta">IN CORSO</span></h2>
+        <div class="projects-grid">
+            
+            <!-- Card 1 -->
+            <a href="/project/1" class="project-link">
+                <div class="project-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">01: BALL BALANCING BOT</h3>
+                        <p class="card-desc">Robot sferico omidirezionale in grado di mantenere l'equilibrio dinamico perfetto su una singola sfera. Utilizza filtri di Kalman integrati con IMU ad alta frequenza.</p>
+                        <span class="status">STATUS: CALIBRATING...</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 2 -->
+            <a href="/project/2" class="project-link">
+                <div class="project-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">02: LINE FOLLOWING BOT</h3>
+                        <p class="card-desc">Il nostro primo progetto storico. Un robottino basato su Arduino con un array di sensori infrarossi frontali per seguire una linea nera.</p>
+                        <span class="status">STATUS: COMPLETED</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 3 -->
+            <a href="/project/3" class="project-link">
+                <div class="project-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">03: ROBOTIC ARM</h3>
+                        <p class="card-desc">Braccio manipolatore a 6 gradi di libertà stampato in 3D con leghe leggere, motori stepper di precisione zero-backlash e cinematica inversa per computer vision.</p>
+                        <span class="status">STATUS: ONLINE</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Nuova Sezione Chi Siamo (Il Team) -->
+    <section class="team-section" id="team">
+        <h2 class="section-title neon-text">NEXUS <span class="yellow">TEAM</span></h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <h4>Denis</h4>
+                <span class="role magenta">HARDWARE LEAD</span>
+            </div>
+            <div class="team-member">
+                <h4>Pietro</h4>
+                <span class="role cyan">AI & VISION SPECIALIST</span>
+            </div>
+            <div class="team-member">
+                <h4>Martina</h4>
+                <span class="role yellow">CONTROL SYSTEMS</span>
+            </div>
+            <div class="team-member">
+                <h4>Alessio</h4>
+                <span class="role text-main">MECHANICAL DESIGNER</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nuova Sezione Dove Siamo (Location & Mappa) -->
+    <section class="location-section" id="location">
+        <h2 class="section-title neon-text">DOVE <span class="cyan">SIAMO</span></h2>
+        
+        <div class="location-container">
+            <div class="location-info">
+                <h3>// FABLAB TRIESTE - HQ</h3>
+                <p>Base operativa per l'innovazione.</p>
+                <div class="coords">
+                    <p>LAT: 45.6495° N</p>
+                    <p>LON: 13.7768° E</p>
+                </div>
+            </div>
+            <div class="map-wrapper">
+                <!-- Iframe OSM/Gmaps di Trieste con filtri CSS aggressivi -->
+                <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=13.75,45.63,13.80,45.66&layer=mapnik&marker=45.6495,13.7768" frameborder="0" scrolling="no" class="dark-map"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>/// NEXUS ROBOTICS TEAM © 2026. RUNNING ON FLASK & PRETEXT ///</p>
+    </footer>
+
+    <!-- Main Script as Module -->
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
