@@ -79,15 +79,15 @@ with app.app_context():
             specs="INPUT:Touchscreen Resistivo|CORE:Raspberry Pi (PID)|KINEMATICS:Cinematica Inversa|OUTPUT:PWM I2C e 3 Servomotori"
         )
         p3 = Project(
-            title='ROBOTIC ARM',
-            short_desc="Braccio manipolatore a 6 gradi di libertà stampato in 3D con leghe leggere, motori stepper di precisione zero-backlash e cinematica inversa per computer vision.",
-            long_desc="Questo braccio robotico a 6 DOF è ingegnerizzato tramite complessi calcoli matriciali. Integra un sistema modulare per scambiare strumenti. Grazie ad una telecamera collegata all'IA, possiede percezione ambientale nativa.",
+            title='ROBOTIC ARM (PROTO V1)',
+            short_desc="Prototipo di braccio robotico telecomandato via Wi-Fi. Realizzato per far testare la logica di controllo al reparto informatica mentre si progetta la versione finale.",
+            long_desc="Questo braccio robotico è attualmente nella sua primissima fase di prototipazione (ispirato a piattaforme open-source come LeRobot SO-100). L'obiettivo di questa build iniziale è avere una base hardware pronta all'uso, permettendo al reparto informatica di iniziare a sviluppare il codice parallelamente alla progettazione 3D della versione finale.<br><br><strong>Direzione Tecnica Attuale:</strong><br>• <strong>Elaborazione (Core):</strong> Scheda con connettività Wi-Fi (es. Raspberry Pi 3B / MCU compatibili) per una gestione wireless.<br>• <strong>Interfaccia (Input):</strong> Pilotaggio remoto tramite 'Mini-me controller' e controlli analogici fisici (joystick) per movimenti fluidi.<br>• <strong>Meccanica (Output):</strong> Struttura base stampata in 3D azionata da un kit di servomotori standard.<br><br>Un perfetto esempio di sviluppo parallelo hardware/software: non si aspetta la meccanica perfetta per iniziare a programmare l'intelligenza del braccio.",
             status='IN PROGRESS',
             status_color='magenta',
             order_num=3,
             image_paths="",
             video_url="",
-            specs="KERNEL:STABLE|POWER:12V LI-ION|CONNECTION:SECURE"
+            specs="CORE:Modulo Wi-Fi (Pi 3B)|INPUT:Joystick & Mini-me controller|STRUTTURA:Stampa 3D (Ref. SO-100)|MOTORI:Servo Kit"
         )
         db.session.add_all([p1, p2, p3])
         db.session.commit()
