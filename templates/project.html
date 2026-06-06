@@ -14,8 +14,8 @@
         
         <header class="project-hero">
             <div class="project-hero-overlay"></div>
-            <!-- Video casuale interpolato via JS -->
-            <video autoplay muted playsinline class="project-video" id="projectVideo">
+            <!-- Video (hero background) -->
+            <video autoplay muted loop playsinline class="project-video" id="projectVideo">
                 <source src="/static/videos/carousel.mp4" type="video/mp4">
             </video>
             
@@ -31,21 +31,47 @@
                 
                 <div class="project-info-box">
                     <h2 class="neon-text">SYSTEM_<span class="{{ project.status_color }}">OVERVIEW</span></h2>
-                    <p class="project-desc">{{ project.long_desc }}</p>
+                    <p class="project-desc">{{ project.long_desc|safe }}</p>
                     
                     <div class="tech-specs">
-                        <div class="spec-row"><span>KERNEL:</span> <span>STABLE</span></div>
-                        <div class="spec-row"><span>POWER:</span> <span>12V LI-ION</span></div>
-                        <div class="spec-row"><span>CONNECTION:</span> <span>SECURE</span></div>
+                        {% if project.specs %}
+                            {% set specs_list = project.specs.split('|') %}
+                            {% for spec in specs_list %}
+                                {% set parts = spec.split(':') %}
+                                {% if parts|length == 2 %}
+                                <div class="spec-row"><span>{{ parts[0] }}:</span> <span>{{ parts[1] }}</span></div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="spec-row"><span>KERNEL:</span> <span>STABLE</span></div>
+                            <div class="spec-row"><span>POWER:</span> <span>12V LI-ION</span></div>
+                            <div class="spec-row"><span>CONNECTION:</span> <span>SECURE</span></div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <div class="project-visuals">
-                    <!-- Simuliamo un visore tecnico della struttura -->
-                    <div class="wireframe-box">
-                        <div class="scanning-bar"></div>
-                        <p class="wireframe-text text-center" style="padding-top:120px;">[ NO SIGNAL DUMP ]<br>RENDERING SCHEMATICS...</p>
-                    </div>
+                    <!-- Simuliamo un visore tecnico della struttura o mostriamo foto -->
+                    {% if project.video_url %}
+                        <div style="margin-bottom: 20px; border: 1px solid #0ff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); overflow: hidden; border-radius: 4px;">
+                            <video autoplay muted loop playsinline style="width: 100%; display: block;">
+                                <source src="{{ project.video_url }}" type="video/mp4">
+                            </video>
+                        </div>
+                    {% endif %}
+                    
+                    {% if images and images|length > 0 %}
+                        {% for img in images %}
+                        <div style="margin-bottom: 20px; border: 1px solid #0ff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); overflow: hidden; border-radius: 4px;">
+                            <img src="{{ url_for('static', filename='images/projects/' ~ img) }}" alt="{{ project.title }} image" style="width: 100%; display: block;">
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="wireframe-box">
+                            <div class="scanning-bar"></div>
+                            <p class="wireframe-text text-center" style="padding-top:120px;">[ NO SIGNAL DUMP ]<br>RENDERING SCHEMATICS...</p>
+                        </div>
+                    {% endif %}
                 </div>
                 
             </div>
