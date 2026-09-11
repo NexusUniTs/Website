@@ -14,6 +14,8 @@ class TeamMember(db.Model):
     name = db.Column(db.String(100), nullable=False)
     persona = db.Column(db.String(100), nullable=True)
     role = db.Column(db.String(200), nullable=True)
+    department = db.Column(db.String(100), nullable=True)
+    order_num = db.Column(db.Integer, default=0)
     manager_id = db.Column(db.Integer, db.ForeignKey('team_member.id'), nullable=True)
     subordinates = db.relationship('TeamMember', backref=db.backref('manager', remote_side=[id]))
 
@@ -32,27 +34,49 @@ class Project(db.Model):
 with app.app_context():
     db.create_all()
     if not TeamMember.query.first():
-        pietro = TeamMember(name="Pietro Dean", persona="Pietro Dean", role="Presidente")
-        martina = TeamMember(name="Martina Anese", persona="Martina Anese", role="Direttrice tecnica, Capa reparto elettronica")
-        alessio = TeamMember(name="Alessio Tessaris", persona="Tessaris Alessio", role="Capo reparto Meccanica")
-        db.session.add_all([pietro, martina, alessio])
+        # 1. Reparto Informatica
+        denis = TeamMember(
+            name="Denis Trokan",
+            role="Capo Reparto Informatica",
+            department="REPARTO INFORMATICA",
+            order_num=1
+        )
+        # 2. Reparto Design e Struttura
+        alessio = TeamMember(
+            name="Alessio Tessaris",
+            role="Capo Reparto & Direttore Tecnico",
+            department="REPARTO DESIGN E STRUTTURA",
+            order_num=2
+        )
+        # 3. Reparto Elettronica
+        martina = TeamMember(
+            name="Martina Anese",
+            role="Capa Reparto & Direttrice Tecnica",
+            department="REPARTO ELETTRONICA",
+            order_num=3
+        )
+        # 4. Reparto Marketing
+        pietro = TeamMember(
+            name="Pietro Dean",
+            role="Presidente & Capo Reparto Marketing",
+            department="REPARTO MARKETING",
+            order_num=4
+        )
+        db.session.add_all([denis, alessio, martina, pietro])
         db.session.commit()
         
-        andrea = TeamMember(name="Andrea Da Dalt", persona="Andrea", role="", manager_id=pietro.id)
-        db.session.add(andrea)
+        # Membri Reparto Informatica
+        elia = TeamMember(name="Elia Covi", role="Membro Reparto", manager_id=denis.id)
+        daniele_d = TeamMember(name="Daniele Deiana", role="Membro Reparto", manager_id=denis.id)
+        raoul = TeamMember(name="Raoul Merotto", role="Membro Reparto", manager_id=denis.id)
+        martucci = TeamMember(name="Alessio Martucci", role="Membro Reparto", manager_id=denis.id)
         
-        luka = TeamMember(name="Luka Dencic", persona="luka.dencic", role="", manager_id=alessio.id)
-        daniele_t = TeamMember(name="Daniele Tessaris", persona="Daniele", role="", manager_id=alessio.id)
+        # Membri Reparto Design e Struttura
+        enrico = TeamMember(name="Enrico Deiana", role="Membro Reparto", manager_id=alessio.id)
+        luca = TeamMember(name="Luca Dencic", role="Membro Reparto", manager_id=alessio.id)
+        daniele_t = TeamMember(name="Daniele Tessaris", role="Membro Reparto", manager_id=alessio.id)
         
-        denis = TeamMember(name="Denis Trokan", persona="TROKAN DENIS", role="Capo reparto Informatica")
-        db.session.add(denis)
-        db.session.commit()
-        
-        riccardo = TeamMember(name="Riccardo Samaritan", persona="Riccardo Samaritan", role="", manager_id=denis.id)
-        tushy = TeamMember(name="Alessio Tushy", persona="tushy", role="", manager_id=denis.id)
-        deiana = TeamMember(name="Daniele Deiana", persona="DEIANA DANIELE", role="", manager_id=denis.id)
-        
-        db.session.add_all([luka, daniele_t, riccardo, tushy, deiana])
+        db.session.add_all([elia, daniele_d, raoul, martucci, enrico, luca, daniele_t])
         db.session.commit()
         
     if not Project.query.first():
@@ -94,7 +118,7 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    leaders = TeamMember.query.filter_by(manager_id=None).all()
+    leaders = TeamMember.query.filter_by(manager_id=None).order_by(TeamMember.order_num).all()
     projects = Project.query.order_by(Project.order_num).all()
     return render_template('index.html', leaders=leaders, projects=projects)
 
