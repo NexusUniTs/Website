@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS /// {{ project.title }}</title>
+    <title>Nexus Robotics Team | {{ project.title }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     
     <div class="project-landing">
-        <a href="/" class="btn-back"><< RETURN_TO_NEXUS_BASE</a>
+        <a href="/" class="btn-back">← Torna ai Progetti</a>
         
         <header class="project-hero">
             <div class="project-hero-overlay"></div>
@@ -30,7 +30,7 @@
             <div class="details-grid">
                 
                 <div class="project-info-box">
-                    <h2 class="neon-text">SYSTEM_<span class="{{ project.status_color }}">OVERVIEW</span></h2>
+                    <h2 class="neon-text">PANORAMICA <span class="{{ project.status_color }}">PROGETTO</span></h2>
                     <p class="project-desc">{{ project.long_desc|safe }}</p>
                     
                     <div class="tech-specs">
@@ -43,15 +43,15 @@
                                 {% endif %}
                             {% endfor %}
                         {% else %}
-                            <div class="spec-row"><span>KERNEL:</span> <span>STABLE</span></div>
-                            <div class="spec-row"><span>POWER:</span> <span>12V LI-ION</span></div>
-                            <div class="spec-row"><span>CONNECTION:</span> <span>SECURE</span></div>
+                            <div class="spec-row"><span>STATO:</span> <span>IN SVILUPPO</span></div>
+                            <div class="spec-row"><span>PIATTAFORMA:</span> <span>PROTOTIPO</span></div>
+                            <div class="spec-row"><span>CONTROLLO:</span> <span>DIGITALE</span></div>
                         {% endif %}
                     </div>
                 </div>
 
                 <div class="project-visuals">
-                    <!-- Simuliamo un visore tecnico della struttura o mostriamo foto -->
+                    <!-- Video specifico del progetto -->
                     {% if project.video_url %}
                         <div style="margin-bottom: 20px; border: 1px solid #0ff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); overflow: hidden; border-radius: 4px;">
                             <video autoplay muted loop playsinline style="width: 100%; display: block;">
@@ -69,7 +69,7 @@
                     {% else %}
                         <div class="wireframe-box">
                             <div class="scanning-bar"></div>
-                            <p class="wireframe-text text-center" style="padding-top:120px;">[ NO SIGNAL DUMP ]<br>RENDERING SCHEMATICS...</p>
+                            <p class="wireframe-text text-center" style="padding-top:120px;">[ SCHEDA IN AGGIORNAMENTO ]<br>Foto e documentazione tecnica presto disponibili.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -79,7 +79,7 @@
     </div>
 
     <footer>
-        <p>/// NEXUS ROBOTICS TEAM © 2026 ///</p>
+        <p>© 2026 Nexus Robotics Team · Trieste</p>
     </footer>
 
 </body>

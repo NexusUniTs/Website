@@ -1,0 +1,16 @@
+[Unit]
+Description=NEXUS Flask application
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/var/www/nexus
+Environment="SECRET_KEY=REPLACE_WITH_A_LONG_RANDOM_VALUE"
+Environment="ADMIN_USERNAME=admin"
+Environment="ADMIN_PASSWORD=SET_ONLY_FOR_FIRST_DATABASE_INITIALIZATION"
+ExecStart=/var/www/nexus/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

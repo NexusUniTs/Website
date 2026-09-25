@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Robotics Team /// CYBER-NETIC ORIGIN</title>
+    <title>Nexus Robotics Team | Trieste</title>
     <!-- Google Fonts: Orbitron & Share Tech Mono -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -18,17 +18,16 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <img src="{{ url_for('static', filename='images/nexus_logo.png') }}" alt="Nexus Logo" style="width: 300px; max-width: 80vw; height: auto; margin-bottom: 20px;">
             <h1 class="hero-title glitch" data-text="NEXUS">NEXUS</h1>
-            <p class="hero-subtitle">[ SYSTEM ON - ENGINEERING THE FUTURE ]</p>
+            <p class="hero-subtitle">[ ROBOTICS & AUTOMATION TEAM ]</p>
         </div>
         <div class="scroll-indicator">SCROLL <br> ↓</div>
     </header>
 
     <!-- Dynamic Layout Section (Pretext) -->
     <section class="dynamic-layout-section">
-        <h2 class="section-title neon-text">SPECIFICHE <span class="cyan">ROBOT</span></h2>
-        <div class="subtitle-desc">>> CLICCA ALL'INTERNO DELL'AREA PER RICALCOLARE IL PERCORSO E AGGIRARE L'ANOMALIA LOGICA.</div>
+        <h2 class="section-title neon-text">CHI <span class="cyan">SIAMO</span></h2>
+        <div class="subtitle-desc">Clicca all'interno dell'area interattiva per simulare l'algoritmo di calcolo vettoriale e ripianificazione in tempo reale.</div>
         
         <div id="canvas-container" class="cyber-grid">
             <canvas id="nexusCanvas"></canvas>
@@ -199,7 +198,7 @@
                         
                     </div>
                     <div class="card-hint">
-                        <span>// PASSA SULLA CARD PER DETTAGLI</span>
+                        <span>// Passa con il mouse per visualizzare i ruoli</span>
                     </div>
                 </div>
             </div>
@@ -209,33 +208,112 @@
     </section>
 
     <!-- Nuova Sezione Dove Siamo (Location & Mappa) -->
+    <style>
+        .location-actions {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 18px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .action-btn.btn-cyan {
+            border: 1px solid var(--cyan, #0ff);
+            color: var(--cyan, #0ff);
+            background: rgba(0, 255, 255, 0.06);
+        }
+        .action-btn.btn-cyan:hover {
+            background: rgba(0, 255, 255, 0.18);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+        .action-btn.btn-magenta {
+            border: 1px solid var(--magenta, #ff007f);
+            color: var(--magenta, #ff007f);
+            background: rgba(255, 0, 127, 0.06);
+        }
+        .action-btn.btn-magenta:hover {
+            background: rgba(255, 0, 127, 0.18);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+        .map-badge-overlay {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 5;
+            background: rgba(8, 24, 57, 0.9);
+            border: 1px solid var(--cyan, #0ff);
+            padding: 8px 14px;
+            border-radius: 4px;
+            color: var(--cyan, #0ff);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+        }
+        .map-badge-overlay:hover {
+            background: rgba(0, 255, 255, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: scale(1.02);
+        }
+    </style>
     <section class="location-section" id="location">
         <h2 class="section-title neon-text">DOVE <span class="cyan">SIAMO</span></h2>
         
         <div class="location-container">
-            <div class="location-info">
-                <h3>// ASPERASTRA - INNOVATION LAB</h3>
-                <p>Base operativa per l'innovazione ospitata da <a href="https://asperastra.org" target="_blank" style="color: #0ff; text-decoration: underline; text-underline-offset: 3px;">Asperastra</a> (Urban Center Trieste).</p>
+            <div class="location-info" style="position: relative; z-index: 10;">
+                <h3>ASPERASTRA - INNOVATION LAB</h3>
+                <p>La nostra base operativa si trova presso <a href="https://asperastra.org" target="_blank" rel="noopener noreferrer" style="color: #0ff; text-decoration: underline; text-underline-offset: 3px; font-weight: bold;">Asperastra</a>, all'interno dell'Urban Center di Trieste.</p>
+                
                 <div class="coords">
                     <p>LAT: 45.6549° N</p>
                     <p>LON: 13.7704° E</p>
                 </div>
-                <div style="margin-top: 25px;">
-                    <a href="https://www.google.com/maps/place/ASPERASTRA+-+Innovation+LAB+-+Urban+Center+Trieste/@45.654973,13.7678215,791m/data=!3m2!1e3!4b1!4m6!3m5!1s0x477b6bc6f13f838d:0x54612c837211ed1c!8m2!3d45.6549693!4d13.7704018!16s%2Fg%2F11lm9wpbs6" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 18px; border: 1px solid #0ff; color: #0ff; text-decoration: none; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; transition: all 0.3s; background: rgba(0, 255, 255, 0.05); text-transform: uppercase; border-radius: 2px;">
-                        📍 APRI IN GOOGLE MAPS ↗
+
+                <div class="location-actions">
+                    <a href="https://asperastra.org" target="_blank" rel="noopener noreferrer" class="action-btn btn-magenta">
+                        🌐 Sito Asperastra ↗
+                    </a>
+                    <a href="https://www.google.com/maps/place/ASPERASTRA+-+Innovation+LAB+-+Urban+Center+Trieste/@45.654973,13.7678215,791m/data=!3m2!1e3!4b1!4m6!3m5!1s0x477b6bc6f13f838d:0x54612c837211ed1c!8m2!3d45.6549693!4d13.7704018!16s%2Fg%2F11lm9wpbs6?entry=ttu&g_ep=EgoyMDI2MDkwOC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="action-btn btn-cyan">
+                        📍 Indicazioni Google Maps ↗
                     </a>
                 </div>
             </div>
-            <div class="map-wrapper">
+            
+            <div class="map-wrapper" style="position: relative;">
                 <!-- OpenStreetMap garantisce affidabilità al 100% in produzione (nessun blocco cookie consent / GDPR di Google) -->
                 <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=13.7620%2C45.6500%2C13.7780%2C45.6600&amp;layer=mapnik&amp;marker=45.6549693%2C13.7704018" frameborder="0" scrolling="no" class="dark-map" style="width: 100%; height: 100%; min-height: 350px; border: 0;" loading="lazy"></iframe>
+                
+                <a href="https://www.google.com/maps/place/ASPERASTRA+-+Innovation+LAB+-+Urban+Center+Trieste/@45.654973,13.7678215,791m/data=!3m2!1e3!4b1!4m6!3m5!1s0x477b6bc6f13f838d:0x54612c837211ed1c!8m2!3d45.6549693!4d13.7704018!16s%2Fg%2F11lm9wpbs6?entry=ttu&g_ep=EgoyMDI2MDkwOC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="map-badge-overlay">
+                    <span>📍 Apri in Google Maps ↗</span>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>/// NEXUS ROBOTICS TEAM © 2026. RUNNING ON FLASK & PRETEXT ///</p>
+        <p>© 2026 Nexus Robotics Team · Trieste</p>
     </footer>
 
     <!-- Main Script as Module -->

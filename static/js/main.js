@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let cw, ch;
 
     // Testo
-    const rawText = "Siamo il gruppo di robotica Nexus del FabLab. Questa interfaccia interattiva usa la matematica per deviare visivamente questo testo, calcolando i vettori e le distanze in tempo reale. Nello stesso modo in cui i nostri robot usano sensori e algoritmi per evitare ostacoli e comprendere lo spazio, noi sperimentiamo combinando codice, stampa 3D ed elettronica. Dai rover bilancianti che sfidano la gravità, ai bracci meccanici in grado di manipolare oggetti con precisione. Impariamo esplorando, testando limiti hardware e scrivendo software su misura per capire la teoria dei controlli automatizzati. Clicca un punto nella griglia per testare la reattività di questo elemento che schiva e riordina istantaneamente ogni singola parola per evitare collisioni.";
+    const rawText = "Siamo Nexus, un team universitario di robotica con base all'Innovation Lab di Asperastra a Trieste. Progettiamo e costruiamo robot combinando programmazione, elettronica e meccanica: dai robot a due ruote con sensori ottici, alle piattaforme di bilanciamento dinamico su più gradi di libertà, fino ai bracci robotici articolati. Il nostro obiettivo è imparare sperimentando direttamente sull'hardware, sviluppando software di controllo, algoritmi di cinematica e sistemi di visione artificiale. Questa griglia interattiva dimostra in tempo reale come un algoritmo può calcolare vettori di repulsione ed evitare ostacoli al tocco del cursore.";
     const words = rawText.split(" ");
 
     let anomX = 0, anomY = 0;
