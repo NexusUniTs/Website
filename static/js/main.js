@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("nexusCanvas");
     if (!canvas) return;
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const ctx = canvas.getContext("2d");
     let cw, ch;
 
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         for (let i = 0; i < words.length; i++) {
             const word = words[i];
-            const wordWidth = ctx.measureText(word + " ").width;
+            const wordWidth = ctx.measureText(`${word} `).width;
 
             if (textX + wordWidth > cw - 30) {
                 textX = 30;
@@ -107,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         drawASCIIAnomaly(anomX, anomY, time);
-        requestAnimationFrame(animate);
+        if (!reducedMotion) requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
 });
@@ -117,6 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cerchiamo un possibile video sia in inde.html (heroVideo) che in project.html (projectVideo)
     const heroVideo = document.getElementById("heroVideo") || document.getElementById("projectVideo");
     if (!heroVideo) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        heroVideo.pause();
+        heroVideo.removeAttribute("autoplay");
+        return;
+    }
 
     const videos = [
         "/static/videos/carousel.mp4",
@@ -150,4 +156,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Inizia la rotazione
     playRandomVideoSnippet();
+});
+
+// Navigazione e reveal leggeri, senza dipendenze esterne.
+document.addEventListener("DOMContentLoaded", () => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const navigation = document.querySelector(".site-nav");
+
+    if (navigation) {
+        const updateNavigation = () => navigation.classList.toggle("is-scrolled", window.scrollY > 24);
+        updateNavigation();
+        window.addEventListener("scroll", updateNavigation, { passive: true });
+    }
+
+    const revealItems = document.querySelectorAll(".reveal");
+    if (reducedMotion || !("IntersectionObserver" in window)) {
+        for (const item of revealItems) item.classList.add("is-visible");
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries, currentObserver) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                currentObserver.unobserve(entry.target);
+            }
+        }
+    }, { threshold: 0.12 });
+
+    for (const item of revealItems) observer.observe(item);
 });

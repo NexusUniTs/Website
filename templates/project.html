@@ -10,9 +10,11 @@
 <body>
     
     <div class="project-landing">
-        <a href="/" class="btn-back">← Torna ai Progetti</a>
+        <header class="project-topbar">
+            <a href="/#projects" class="btn-back">← Torna ai Progetti</a>
+        </header>
         
-        <header class="project-hero">
+        <header class="project-hero reveal">
             <div class="project-hero-overlay"></div>
             <!-- Video (hero background) -->
             <video autoplay muted loop playsinline class="project-video" id="projectVideo">
@@ -29,9 +31,9 @@
         <section class="project-details">
             <div class="details-grid">
                 
-                <div class="project-info-box">
+                <div class="project-info-box reveal">
                     <h2 class="neon-text">PANORAMICA <span class="{{ project.status_color }}">PROGETTO</span></h2>
-                    <p class="project-desc">{{ project.long_desc|safe }}</p>
+                    <p class="project-desc">{{ project.long_desc|striptags }}</p>
                     
                     <div class="tech-specs">
                         {% if project.specs %}
@@ -50,26 +52,27 @@
                     </div>
                 </div>
 
-                <div class="project-visuals">
-                    <!-- Video specifico del progetto -->
+                <div class="project-visuals reveal">
                     {% if project.video_url %}
-                        <div style="margin-bottom: 20px; border: 1px solid #0ff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); overflow: hidden; border-radius: 4px;">
-                            <video autoplay muted loop playsinline style="width: 100%; display: block;">
+                        <div class="project-media project-video-frame">
+                            <video autoplay muted loop playsinline controls>
                                 <source src="{{ project.video_url }}" type="video/mp4">
                             </video>
                         </div>
                     {% endif %}
                     
-                    {% if images and images|length > 0 %}
-                        {% for img in images %}
-                        <div style="margin-bottom: 20px; border: 1px solid #0ff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); overflow: hidden; border-radius: 4px;">
-                            <img src="{{ url_for('static', filename='images/projects/' ~ img) }}" alt="{{ project.title }} image" style="width: 100%; display: block;">
+                    {% if images %}
+                        <div class="project-gallery">
+                            {% for img in images %}
+                            <figure class="project-media">
+                                <img src="{{ url_for('static', filename='images/projects/' ~ img) }}" alt="{{ project.title }} — immagine {{ loop.index }}" loading="lazy">
+                            </figure>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     {% else %}
                         <div class="wireframe-box">
                             <div class="scanning-bar"></div>
-                            <p class="wireframe-text text-center" style="padding-top:120px;">[ SCHEDA IN AGGIORNAMENTO ]<br>Foto e documentazione tecnica presto disponibili.</p>
+                            <p class="wireframe-text text-center">[ SCHEDA IN AGGIORNAMENTO ]<br>Foto e documentazione tecnica presto disponibili.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -81,6 +84,6 @@
     <footer>
         <p>© 2026 Nexus Robotics Team · Trieste</p>
     </footer>
-
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

@@ -9,9 +9,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Vai al contenuto</a>
+    <nav class="site-nav" aria-label="Navigazione principale">
+        <a class="nav-logo" href="#top">NEXUS</a>
+        <div class="nav-links">
+            <a href="#projects">Progetti</a>
+            <a href="#team">Team</a>
+            <a href="#location">Sede</a>
+        </div>
+    </nav>
 
     <!-- Hero Section Cyberpunk -->
-    <header class="hero">
+    <header class="hero" id="top">
         <video autoplay muted playsinline class="hero-video" id="heroVideo">
             <!-- Verrà gestito dal JS -->
             <source src="/static/videos/carousel.mp4" type="video/mp4">
@@ -21,11 +30,12 @@
             <h1 class="hero-title glitch" data-text="NEXUS">NEXUS</h1>
             <p class="hero-subtitle">[ ROBOTICS & AUTOMATION TEAM ]</p>
         </div>
-        <div class="scroll-indicator">SCROLL <br> ↓</div>
+        <a class="scroll-indicator" href="#projects" aria-label="Vai ai progetti">SCROLL <br> ↓</a>
     </header>
 
+    <main id="main-content">
     <!-- Dynamic Layout Section (Pretext) -->
-    <section class="dynamic-layout-section">
+    <section class="dynamic-layout-section reveal">
         <h2 class="section-title neon-text">CHI <span class="cyan">SIAMO</span></h2>
         <div class="subtitle-desc">Clicca all'interno dell'area interattiva per simulare l'algoritmo di calcolo vettoriale e ripianificazione in tempo reale.</div>
         
@@ -35,24 +45,26 @@
     </section>
 
     <!-- Nuova Sezione Progetti -->
-    <section class="projects-section" id="projects">
-        <h2 class="section-title neon-text">PROGETTI <span class="magenta">IN CORSO</span></h2>
+    <section class="projects-section reveal" id="projects">
+        <h2 class="section-title neon-text">I NOSTRI <span class="magenta">PROGETTI</span></h2>
         <div class="projects-grid">
             {% for project in projects %}
-            <a href="/project/{{ project.id }}" class="project-link">
+            <a href="/project/{{ project.id }}" class="project-link reveal">
                 <div class="project-card">
                     <div class="card-glow"></div>
                     <div class="card-content">
                         <h3 class="card-title">0{{ loop.index }}: {{ project.title }}</h3>
                         
                         {% if project.image_paths %}
-                        <div style="margin-bottom: 15px; border-radius: 5px; overflow: hidden; border: 1px solid #0ff; opacity: 0.85;">
-                            <img src="{{ url_for('static', filename='images/projects/' + project.image_paths.split(',')[0]) }}" alt="Preview" style="width: 100%; height: 180px; object-fit: cover; display: block;">
+                        <div class="card-media">
+                            <img src="{{ url_for('static', filename='images/projects/' + project.image_paths.split(',')[0]) }}" alt="{{ project.title }}" loading="lazy">
                         </div>
+                        {% else %}
+                        <div class="card-media card-placeholder" aria-label="Immagine del progetto in aggiornamento">[ MEDIA IN ARRIVO ]</div>
                         {% endif %}
 
                         <p class="card-desc">{{ project.short_desc }}</p>
-                        <span class="status" style="color: {{ project.status_color if project.status_color else 'cyan' }};">STATUS: {{ project.status }}</span>
+                        <span class="status {{ project.status_color or 'cyan' }}">STATUS: {{ project.status }}</span>
                     </div>
                 </div>
             </a>
@@ -161,9 +173,9 @@
             color: var(--cyan, #0ff);
         }
     </style>
-    <section class="team-section" id="team">
+    <section class="team-section reveal" id="team">
         <h2 class="section-title neon-text">NEXUS <span class="yellow">TEAM</span></h2>
-        <div class="projects-grid"> <!-- Usiamo la grid dei progetti per coerenza visiva -->
+        <div class="team-grid">
             {% for leader in leaders %}
             
             {% set dept_name = leader.department if leader.department else "TEAM MEMBER" %}
@@ -175,9 +187,9 @@
                     <div class="team-members-list">
                         
                         <!-- Leader -->
-                        <div class="member-item">
+                        <div class="member-item" tabindex="0">
                             <div class="member-header">
-                                <span class="member-name">> {{ leader.name }}</span>
+                                <span class="member-name">&gt; {{ leader.name }}</span>
                                 <span class="member-tag lead">[ LEAD ]</span>
                             </div>
                             <div class="member-role">{{ leader.role if leader.role else 'Capo Reparto' }}</div>
@@ -186,9 +198,9 @@
                         <!-- Sottoposti -->
                         {% if leader.subordinates %}
                             {% for sub in leader.subordinates %}
-                            <div class="member-item">
+                            <div class="member-item" tabindex="0">
                                 <div class="member-header">
-                                    <span class="member-name">> {{ sub.name }}</span>
+                                    <span class="member-name">&gt; {{ sub.name }}</span>
                                     <span class="member-tag">[ MEMBER ]</span>
                                 </div>
                                 <div class="member-role">{{ sub.role if sub.role else 'Membro Reparto' }}</div>
@@ -277,7 +289,7 @@
             transform: scale(1.02);
         }
     </style>
-    <section class="location-section" id="location">
+    <section class="location-section reveal" id="location">
         <h2 class="section-title neon-text">DOVE <span class="cyan">SIAMO</span></h2>
         
         <div class="location-container">
@@ -310,6 +322,8 @@
             </div>
         </div>
     </section>
+
+    </main>
 
     <!-- Footer -->
     <footer>
