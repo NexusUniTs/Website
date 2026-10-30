@@ -1,23 +1,180 @@
 {% extends 'admin/base.html' %}
 {% block head_css %}
     {{ super() }}
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { --nexus-bg:#0b2148; --nexus-deep:#081839; --nexus-surface:#0f2b5b; --nexus-border:#1b2f5a; --nexus-cyan:#1a91f7; --nexus-magenta:#8730f1; --nexus-text:#fff; --nexus-muted:#c6d6f2; }
-        body { background:var(--nexus-bg); color:var(--nexus-text); font-family:'Share Tech Mono',monospace; }
-        .navbar { background:var(--nexus-deep)!important; border-bottom:1px solid var(--nexus-cyan); box-shadow:0 0 18px rgba(26,145,247,.22); }
-        .navbar-brand, .navbar a { color:var(--nexus-text)!important; font-family:'Orbitron',sans-serif; }
-        .navbar-brand { letter-spacing:2px; text-shadow:0 0 8px rgba(26,145,247,.7); }
-        .container, .container-fluid { color:var(--nexus-text); }
-        .card, .table, .modal-content, .form-control, .custom-select { background:var(--nexus-surface); color:var(--nexus-text); border-color:var(--nexus-border); }
-        .table td, .table th { border-color:var(--nexus-border); }
-        .table thead th { color:var(--nexus-cyan); font-family:'Orbitron',sans-serif; font-size:.78rem; }
-        .form-control:focus, .custom-select:focus { background:var(--nexus-deep); color:#fff; border-color:var(--nexus-cyan); box-shadow:0 0 0 .2rem rgba(26,145,247,.2); }
-        .btn-primary { background:var(--nexus-cyan); border-color:var(--nexus-cyan); color:#06152e; font-weight:700; }
-        .btn-primary:hover { background:#55b5ff; border-color:#55b5ff; }
-        .btn-danger { background:var(--nexus-magenta); border-color:var(--nexus-magenta); }
-        a { color:#72c4ff; }
-        .breadcrumb, .alert { background:var(--nexus-deep); border-color:var(--nexus-border); color:var(--nexus-muted); }
-        .pagination .page-link { background:var(--nexus-surface); border-color:var(--nexus-border); color:#72c4ff; }
+        :root {
+            --nexus-bg: #091a38;
+            --nexus-deep: #06132b;
+            --nexus-surface: #0d2652;
+            --nexus-surface-hover: #13336d;
+            --nexus-border: #1a427f;
+            --nexus-cyan: #00f0ff;
+            --nexus-cyan-dim: #1a91f7;
+            --nexus-magenta: #e02484;
+            --nexus-text: #f0f6fc;
+            --nexus-muted: #a5c2eb;
+        }
+
+        body {
+            background: var(--nexus-bg) !important;
+            color: var(--nexus-text) !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--nexus-deep) !important;
+            border-bottom: 2px solid var(--nexus-cyan-dim) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+            padding: 14px 24px !important;
+        }
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif !important;
+            letter-spacing: 2px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6) !important;
+            font-size: 1.25rem !important;
+        }
+        .navbar-nav .nav-link {
+            color: var(--nexus-muted) !important;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            padding: 8px 16px !important;
+            border-radius: 4px !important;
+            transition: all 0.2s ease !important;
+        }
+        .navbar-nav .nav-link:hover, .navbar-nav .active > .nav-link {
+            color: #ffffff !important;
+            background: rgba(26, 145, 247, 0.2) !important;
+        }
+
+        /* Container & Page Header */
+        .container, .container-fluid {
+            padding-top: 25px;
+            padding-bottom: 50px;
+        }
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif !important;
+            color: #ffffff !important;
+            letter-spacing: 1px !important;
+            margin-bottom: 20px !important;
+        }
+
+        /* Tabs (List, Create) */
+        .nav-tabs {
+            border-bottom: 1px solid var(--nexus-border) !important;
+            margin-bottom: 20px !important;
+        }
+        .nav-tabs .nav-link {
+            background: var(--nexus-deep) !important;
+            color: var(--nexus-muted) !important;
+            border: 1px solid var(--nexus-border) !important;
+            border-bottom: none !important;
+            font-weight: 600 !important;
+            margin-right: 5px !important;
+            border-radius: 6px 6px 0 0 !important;
+        }
+        .nav-tabs .nav-link.active {
+            background: var(--nexus-surface) !important;
+            color: var(--nexus-cyan) !important;
+            border-color: var(--nexus-cyan-dim) !important;
+        }
+
+        /* Tabella Dati (Super Leggibile) */
+        .table-responsive {
+            border-radius: 8px !important;
+            border: 1px solid var(--nexus-border) !important;
+            background: var(--nexus-surface) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
+            overflow-x: auto !important;
+        }
+        .table {
+            background: transparent !important;
+            color: var(--nexus-text) !important;
+            margin-bottom: 0 !important;
+        }
+        .table th, .table td {
+            border-top: 1px solid var(--nexus-border) !important;
+            border-bottom: 1px solid var(--nexus-border) !important;
+            padding: 14px 18px !important;
+            vertical-align: middle !important;
+        }
+        .table thead th {
+            background: var(--nexus-deep) !important;
+            color: var(--nexus-cyan) !important;
+            font-family: 'Orbitron', sans-serif !important;
+            font-size: 0.82rem !important;
+            letter-spacing: 1px !important;
+            border-bottom: 2px solid var(--nexus-cyan-dim) !important;
+            text-transform: uppercase !important;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+        }
+        .table tbody tr:hover {
+            background-color: var(--nexus-surface-hover) !important;
+        }
+
+        /* Bottoni Azioni e Formattazione */
+        .btn-primary {
+            background: var(--nexus-cyan-dim) !important;
+            border-color: var(--nexus-cyan-dim) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+        .btn-primary:hover {
+            background: #3ba4ff !important;
+            border-color: #3ba4ff !important;
+            box-shadow: 0 0 10px rgba(26, 145, 247, 0.4) !important;
+        }
+        .btn-danger {
+            background: var(--nexus-magenta) !important;
+            border-color: var(--nexus-magenta) !important;
+        }
+        .btn-info {
+            background: #00adb5 !important;
+            border-color: #00adb5 !important;
+            color: #fff !important;
+        }
+
+        /* Form e Input */
+        .card, .form-control, .custom-select {
+            background: var(--nexus-deep) !important;
+            color: #ffffff !important;
+            border: 1px solid var(--nexus-border) !important;
+            border-radius: 6px !important;
+        }
+        .form-control:focus, .custom-select:focus {
+            background: #040e21 !important;
+            color: #ffffff !important;
+            border-color: var(--nexus-cyan) !important;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.3) !important;
+        }
+        .form-group label {
+            color: var(--nexus-muted) !important;
+            font-weight: 600 !important;
+            margin-bottom: 6px !important;
+        }
+
+        /* Paginazione & Filtri */
+        .pagination .page-link {
+            background: var(--nexus-deep) !important;
+            border-color: var(--nexus-border) !important;
+            color: var(--nexus-muted) !important;
+        }
+        .pagination .page-item.active .page-link {
+            background: var(--nexus-cyan-dim) !important;
+            border-color: var(--nexus-cyan-dim) !important;
+            color: #ffffff !important;
+        }
+        .filters .btn {
+            background: var(--nexus-deep) !important;
+            border-color: var(--nexus-border) !important;
+            color: var(--nexus-muted) !important;
+        }
     </style>
 {% endblock %}

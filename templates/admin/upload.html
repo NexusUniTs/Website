@@ -1,2 +1,237 @@
 <!doctype html>
-<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NEXUS // Upload</title><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"><style>:root{--bg:#081839;--surface:#0d2652;--cyan:#1a91f7;--muted:#c6d6f2}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 20%,#12316b,#081839 65%);color:#fff;font-family:'Share Tech Mono',monospace}.panel{width:min(620px,calc(100% - 32px));padding:38px;border:1px solid var(--cyan);background:rgba(13,38,82,.95);box-shadow:0 0 18px rgba(26,145,247,.3)}h1{font:700 26px 'Orbitron',sans-serif;color:#72c4ff;letter-spacing:2px}p{color:var(--muted)}input[type=file]{width:100%;padding:22px;border:1px dashed var(--cyan);background:var(--bg);color:var(--muted);font:inherit}.actions{display:flex;gap:14px;align-items:center;margin-top:24px}.button{padding:12px 18px;border:0;background:var(--cyan);color:#06152e;font:700 13px 'Orbitron',sans-serif;cursor:pointer}.back{color:#72c4ff}</style></head><body><main class="panel"><p>// MEDIA UPLOAD</p><h1>{{ project.title }}</h1><form method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="file" name="image" accept=".jpg,.jpeg,.png,.webp,.gif" required><div class="actions"><button class="button" type="submit">UPLOAD ASSET</button><a class="back" href="{{ url_for('project.edit_view', id=project.id, url='/admin/project/edit/') }}">CANCEL</a></div></form></main></body></html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NEXUS Admin // Gestione Media Progetto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --bg-deep: #081839;
+            --bg-card: #0d2652;
+            --border-color: #1a91f7;
+            --cyan: #00f0ff;
+            --magenta: #ff007f;
+            --text-light: #f0f6fc;
+            --text-muted: #9fb5d6;
+        }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        .header-bar {
+            background: rgba(8, 24, 57, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            color: #fff;
+            margin: 0;
+        }
+        .media-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(26, 145, 247, 0.4);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .media-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            color: var(--cyan);
+            border-bottom: 1px solid rgba(26, 145, 247, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            background: #081839;
+            border: 1px solid #1a91f7;
+            color: #fff;
+        }
+        .form-control:focus {
+            background: #06152e;
+            color: #fff;
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 15px;
+        }
+        .gallery-item {
+            background: #081839;
+            border: 1px solid rgba(26, 145, 247, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+        }
+        .gallery-item .item-footer {
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .btn-cyan {
+            background: var(--cyan);
+            color: #081839;
+            font-weight: 700;
+            border: none;
+        }
+        .btn-cyan:hover {
+            background: #55b5ff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-bar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <a href="{{ url_for('project.index_view') }}" class="btn btn-outline-info btn-sm mr-3">← Torna alla Tabella Progetti</a>
+                <span class="header-title">NEXUS MEDIA MANAGER // {{ project.title }}</span>
+            </div>
+            <div>
+                <a href="{{ url_for('project.edit_view', id=project.id, url='/admin/project/') }}" class="btn btn-secondary btn-sm mr-2">✏ Modifica Testi</a>
+                <a href="/project/{{ project.id }}" target="_blank" class="btn btn-outline-light btn-sm">👁 Guarda sul Sito ↗</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <!-- SEZIONE VIDEO -->
+            <div class="col-lg-6">
+                <div class="media-card">
+                    <h3>🎬 Video Dimostrativo del Progetto</h3>
+                    <p class="text-muted">Il video appare come background animato o riquadro demo nella pagina del progetto.</p>
+
+                    {% if project.video_url %}
+                        <div class="mb-3 p-3 bg-dark rounded border border-info">
+                            <p class="mb-2 text-info font-weight-bold">✓ Video attualmente attivo:</p>
+                            <code class="d-block mb-3 text-break text-light">{{ project.video_url }}</code>
+                            
+                            <div class="embed-responsive embed-responsive-16by9 mb-3 rounded overflow-hidden">
+                                <video controls class="embed-responsive-item" style="background:#000;">
+                                    <source src="{{ project.video_url }}">
+                                    Il tuo browser non supporta il tag video.
+                                </video>
+                            </div>
+
+                            <form method="post" onsubmit="return confirm('Sei sicuro di voler rimuovere il video da questo progetto?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="action" value="remove_video">
+                                <button type="submit" class="btn btn-danger btn-sm">🗑 Rimuovi Video</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-secondary text-center py-4 mb-3">
+                            <span style="font-size: 2rem;">📹</span>
+                            <p class="mt-2 mb-0">Nessun video associato a questo progetto.</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Form Carica Video -->
+                    <div class="mt-4 pt-3 border-top border-secondary">
+                        <h5 class="text-light mb-3">Carica nuovo file video (MP4, WebM, MOV)</h5>
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="action" value="upload_video">
+                            
+                            <div class="form-group">
+                                <label class="text-muted">Seleziona file dal computer (fino a 250 MB):</label>
+                                <input type="file" name="video_file" accept=".mp4,.webm,.mov,.m4v" class="form-control-file p-2 border border-secondary rounded">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="text-muted">Oppure inserisci URL esterno (YouTube o link diretto):</label>
+                                <input type="text" name="video_url" class="form-control" placeholder="https://..." value="{{ project.video_url if project.video_url and not project.video_url.startswith('/static') else '' }}">
+                            </div>
+
+                            <button type="submit" class="btn btn-cyan btn-block mt-3">⬆ Salva / Aggiorna Video</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEZIONE FOTO / GALLERIA -->
+            <div class="col-lg-6">
+                <div class="media-card">
+                    <h3>📷 Galleria Foto del Robot</h3>
+                    <p class="text-muted">La prima immagine della galleria viene utilizzata in automatico come copertina nella homepage.</p>
+
+                    <!-- Form Carica Foto -->
+                    <form method="post" enctype="multipart/form-data" class="mb-4 p-3 bg-dark rounded border border-secondary">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="action" value="upload_images">
+                        
+                        <div class="form-group mb-2">
+                            <label class="text-light font-weight-bold">Seleziona una o più foto (JPG, PNG, WebP):</label>
+                            <input type="file" name="image_files" accept=".jpg,.jpeg,.png,.webp,.gif" multiple class="form-control-file p-2 border border-info rounded">
+                            <small class="form-text text-muted">Puoi selezionare più file contemporaneamente tenendo premuto Ctrl o Cmd.</small>
+                        </div>
+                        <button type="submit" class="btn btn-cyan btn-sm mt-2">⬆ Aggiungi Foto alla Galleria</button>
+                    </form>
+
+                    <!-- Elenco Foto Attuali -->
+                    <h5 class="text-light mb-3">Foto Attuali ({{ images|length }})</h5>
+                    {% if images and images|length > 0 %}
+                        <div class="gallery-grid">
+                            {% for img in images %}
+                                <div class="gallery-item">
+                                    <img src="{{ url_for('static', filename='images/projects/' ~ img) }}" alt="Foto progetto">
+                                    <div class="item-footer d-flex justify-content-between align-items-center">
+                                        <small class="text-muted text-truncate" style="max-width: 100px;">{{ img.split('/')[-1] }}</small>
+                                        <form method="post" onsubmit="return confirm('Eliminare questa foto dalla galleria?');" class="m-0">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="action" value="remove_image">
+                                            <input type="hidden" name="image_path" value="{{ img }}">
+                                            <button type="submit" class="btn btn-danger btn-xs py-0 px-1" title="Elimina foto">&times;</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-secondary text-center py-4">
+                            <p class="mb-0">Nessuna foto presente in questo progetto.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

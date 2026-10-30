@@ -6,12 +6,14 @@ from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from markupsafe import Markup
 import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change-this-secret-in-production')
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 250 * 1024 * 1024  # 250 MB per video e immagini ad alta risoluzione
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'static', 'images', 'projects')
+app.config['VIDEO_FOLDER'] = os.path.join(os.path.dirname(__file__), 'static', 'videos')
 csrf = CSRFProtect(app)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'nexus.db')
@@ -195,45 +197,151 @@ class SecureModelView(ModelView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('login'))
 
+class TeamMemberAdminView(SecureModelView):
+    column_list = ['order_num', 'department', 'name', 'role', 'manager']
+    column_labels = {
+        'order_num': '#',
+        'department': 'Reparto',
+        'name': 'Nome e Cognome',
+        'role': 'Ruolo',
+        'manager': 'Responsabile Diretto'
+    }
+    column_default_sort = ('order_num', False)
+    column_filters = ['department']
+    column_searchable_list = ['name', 'role', 'department']
+
+class ProjectAdminView(SecureModelView):
+    # Rimuoviamo long_desc e short_desc dalla lista per non comprimere la tabella orizzontalmente
+    column_list = ['order_num', 'title', 'status', 'video_url', 'media_manager']
+    column_labels = {
+        'order_num': '#',
+        'title': 'Titolo Progetto',
+        'status': 'Stato',
+        'video_url': 'Video Demo',
+        'media_manager': 'Media (Foto / Video)'
+    }
+    column_default_sort = ('order_num', False)
+    column_searchable_list = ['title', 'short_desc']
+    column_filters = ['status']
+    
+    form_columns = ['order_num', 'title', 'short_desc', 'long_desc', 'status', 'status_color', 'specs', 'video_url', 'image_paths']
+    form_widget_args = {
+        'short_desc': {'rows': 3},
+        'long_desc': {'rows': 8},
+        'specs': {'rows': 2}
+    }
+
+    def _video_formatter(view, context, model, name):
+        if model.video_url:
+            return Markup(f'<a href="{model.video_url}" target="_blank" class="badge badge-success" style="padding: 6px 10px; font-size: 11px; text-decoration: none;">▶ Guarda Video</a>')
+        return Markup('<span class="badge badge-secondary" style="padding: 6px 10px; font-size: 11px; opacity: 0.6;">Nessun video</span>')
+
+    def _status_formatter(view, context, model, name):
+        color = model.status_color or '#1a91f7'
+        return Markup(f'<span class="badge badge-info" style="padding: 6px 10px; font-size: 11px; border: 1px solid {color}; background: rgba(0,0,0,0.3); color: #fff;">{model.status}</span>')
+
+    def _media_manager_formatter(view, context, model, name):
+        upload_url = url_for('upload_project_media', project_id=model.id)
+        img_count = len([p for p in (model.image_paths or '').split(',') if p])
+        has_video = '🎬 ' if model.video_url else '📁 '
+        return Markup(f'<a href="{upload_url}" class="btn btn-sm btn-primary" style="font-weight: bold; padding: 6px 12px; font-size: 12px; border-radius: 4px;">{has_video}Carica Video / Foto ({img_count})</a>')
+
+    column_formatters = {
+        'video_url': _video_formatter,
+        'status': _status_formatter,
+        'media_manager': _media_manager_formatter
+    }
+
 admin = Admin(app, name='NEXUS Admin', index_view=SecureAdminIndexView())
-admin.add_view(SecureModelView(TeamMember, db.session, name='Membri team'))
-admin.add_view(SecureModelView(Project, db.session, name='Progetti'))
+admin.add_view(TeamMemberAdminView(TeamMember, db.session, name='Membri Team'))
+admin.add_view(ProjectAdminView(Project, db.session, name='Progetti'))
 
 @app.route('/admin/upload/<int:project_id>', methods=['GET', 'POST'])
-def upload_project_image(project_id):
+def upload_project_media(project_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     project = db.session.get(Project, project_id)
+    if not project:
+        return 'Progetto non trovato', 404
+
     if request.method == 'GET':
-        if not project:
-            return 'Progetto non trovato', 404
-        return render_template('admin/upload.html', project=project)
-    image = request.files.get('image')
-    allowed = {'jpg', 'jpeg', 'png', 'webp', 'gif'}
-    if not project or image is None or not image.filename or '.' not in image.filename:
-        return 'Richiesta non valida', 400
-    original_name = image.filename
-    extension = original_name.rsplit('.', 1)[1].lower()
-    if extension not in allowed:
-        return 'Formato immagine non consentito', 400
-    try:
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        filename = secure_filename(original_name)
-        if not filename:
-            return 'Nome file non valido', 400
+        images = [p for p in (project.image_paths or '').split(',') if p]
+        return render_template('admin/upload.html', project=project, images=images)
+
+    action = request.form.get('action')
+
+    # 1. Caricamento Video
+    if action == 'upload_video':
+        video_file = request.files.get('video_file')
+        external_url = request.form.get('video_url', '').strip()
+
+        if external_url:
+            project.video_url = external_url
+            db.session.commit()
+            flash('Link video esterno aggiornato con successo!', 'success')
+        elif video_file and video_file.filename:
+            allowed_videos = {'mp4', 'webm', 'mov', 'm4v'}
+            ext = video_file.filename.rsplit('.', 1)[-1].lower() if '.' in video_file.filename else ''
+            if ext not in allowed_videos:
+                flash('Formato video non valido. Usa MP4, WebM o MOV.', 'error')
+                return redirect(url_for('upload_project_media', project_id=project.id))
+            
+            os.makedirs(app.config['VIDEO_FOLDER'], exist_ok=True)
+            fname = secure_filename(f"project_{project.id}_{video_file.filename}")
+            save_path = os.path.join(app.config['VIDEO_FOLDER'], fname)
+            video_file.save(save_path)
+            project.video_url = f"/static/videos/{fname}"
+            db.session.commit()
+            flash('Video caricato e collegato al progetto!', 'success')
+        else:
+            flash('Nessun file o URL video selezionato.', 'error')
+
+    # 2. Rimozione Video
+    elif action == 'remove_video':
+        project.video_url = None
+        db.session.commit()
+        flash('Video rimosso dal progetto.', 'success')
+
+    # 3. Caricamento Immagini (supporta upload multiplo)
+    elif action == 'upload_images':
+        image_files = request.files.getlist('image_files')
+        allowed_images = {'jpg', 'jpeg', 'png', 'webp', 'gif'}
+        uploaded_count = 0
+        
         project_folder = os.path.join(app.config['UPLOAD_FOLDER'], f'project_{project.id}')
         os.makedirs(project_folder, exist_ok=True)
-        path = os.path.join(project_folder, filename)
-        image.save(path)
-    except OSError:
-        return 'Impossibile salvare il file', 500
-    relative_path = f'project_{project.id}/{filename}'
-    paths = [p for p in (project.image_paths or '').split(',') if p]
-    if relative_path not in paths:
-        paths.append(relative_path)
-        project.image_paths = ','.join(paths)
-        db.session.commit()
-    return redirect(url_for('project.edit_view', id=project.id, url='/admin/project/edit/'))
+        paths = [p for p in (project.image_paths or '').split(',') if p]
+
+        for img in image_files:
+            if img and img.filename and '.' in img.filename:
+                ext = img.filename.rsplit('.', 1)[-1].lower()
+                if ext in allowed_images:
+                    fname = secure_filename(img.filename)
+                    save_path = os.path.join(project_folder, fname)
+                    img.save(save_path)
+                    rel_path = f'project_{project.id}/{fname}'
+                    if rel_path not in paths:
+                        paths.append(rel_path)
+                        uploaded_count += 1
+
+        if uploaded_count > 0:
+            project.image_paths = ','.join(paths)
+            db.session.commit()
+            flash(f'{uploaded_count} foto caricate con successo!', 'success')
+        else:
+            flash('Nessuna immagine valida caricata.', 'error')
+
+    # 4. Rimozione singola Immagine
+    elif action == 'remove_image':
+        img_to_remove = request.form.get('image_path')
+        paths = [p for p in (project.image_paths or '').split(',') if p]
+        if img_to_remove in paths:
+            paths.remove(img_to_remove)
+            project.image_paths = ','.join(paths)
+            db.session.commit()
+            flash('Immagine rimossa dalla galleria.', 'success')
+
+    return redirect(url_for('upload_project_media', project_id=project.id))
 
 @app.route('/')
 def index():
@@ -251,4 +359,5 @@ def project_detail(project_id):
     return render_template('project.html', project=project, images=images)
 
 if __name__ == '__main__':
-    app.run(debug=False, port=5000)
+    port = int(os.environ.get('PORT', 8000))
+    app.run(debug=True, port=port)
